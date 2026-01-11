@@ -22,8 +22,7 @@ const AUCTION_FACTS = [
 
 const HAMMER_SOUND = "https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3";
 
-// --- NEW HELPER FUNCTION TO PREVENT CRASHES ---
-// This ensures we always get a String ID (e.g., "CSK") even if an Object is passed
+// HELPER: Ensures we always get a String ID even if an Object is passed
 const safeTeamId = (input) => {
   if (!input) return null;
   if (typeof input === 'object') return input.teamId || input.name || "Unknown";
@@ -31,14 +30,13 @@ const safeTeamId = (input) => {
 };
 
 export default function AuctionRoom({ socket, userTeam, onLogout }) {
-  // Use the helper to guarantee myTeam is a string
   const myTeam = safeTeamId(userTeam); 
   const coachName = userTeam?.coachName || "Coach"; 
   const theme = TEAMS[myTeam] || { primary: "#3b82f6", secondary: "#1e293b" };
 
   const [currentPlayer, setCurrentPlayer] = useState(null);
   const [currentBid, setCurrentBid] = useState(0);
-  const [currentBidder, setCurrentBidder] = useState(null); // Keep raw data in state
+  const [currentBidder, setCurrentBidder] = useState(null);
   const [logs, setLogs] = useState([]);
   const [soldPlayers, setSoldPlayers] = useState([]);
   const [upcomingPlayers, setUpcomingPlayers] = useState([]);
@@ -53,7 +51,6 @@ export default function AuctionRoom({ socket, userTeam, onLogout }) {
   const [selectedSquadId, setSelectedSquadId] = useState(null);
   const audioRef = useRef(new Audio(HAMMER_SOUND));
 
-  // Helper variable: The Safe String version of the current bidder
   const bidderId = safeTeamId(currentBidder);
 
   useEffect(() => {
@@ -66,10 +63,7 @@ export default function AuctionRoom({ socket, userTeam, onLogout }) {
         setCurrentPlayer(data.currentPlayer);
       }
       if (data.currentBid !== undefined) setCurrentBid(data.currentBid);
-      
-      // Store whatever the server sends, we sanitize it later using 'bidderId'
       if (data.currentBidder !== undefined) setCurrentBidder(data.currentBidder);
-      
       if (data.logs) setLogs(data.logs);
       if (data.soldPlayers) {
          setSoldPlayers(data.soldPlayers);
@@ -102,7 +96,6 @@ export default function AuctionRoom({ socket, userTeam, onLogout }) {
   };
 
   const getTeamStats = (teamId) => {
-    // Sanitize input teamId just in case
     const safeId = safeTeamId(teamId);
     const list = soldPlayers.filter(p => safeTeamId(p.soldTo) === safeId);
     const spent = list.reduce((acc, p) => acc + parseFloat(p.soldPrice), 0);
@@ -150,7 +143,6 @@ export default function AuctionRoom({ socket, userTeam, onLogout }) {
   const basePrice = currentPlayer ? parseFloat(currentPlayer.basePrice) : 0;
   
   const nextBidAmount = currentVal === 0 ? basePrice : currentVal + 0.20;
-  // Compare safe IDs
   const isLeader = bidderId === myTeam;
   const isOpening = currentVal === 0 || currentVal < basePrice;
   const canAffordStandard = myPurse >= nextBidAmount;
@@ -202,15 +194,19 @@ export default function AuctionRoom({ socket, userTeam, onLogout }) {
       <div style={{ flex: 1, display: "flex", overflow: "hidden", paddingBottom: "40px", position: "relative" }}> 
         <div style={{ position: "absolute", inset: 0, opacity: 0.05, backgroundImage: "radial-gradient(#ffffff 1px, transparent 1px)", backgroundSize: "30px 30px", pointerEvents: "none" }}></div>
 
-        {/* LEFT SIDEBAR: LOGS */}
+        {/* LEFT SIDEBAR: LOGS (FIXED CRASH HERE) */}
         <div style={{ width: "260px", background: "rgba(15, 23, 42, 0.6)", backdropFilter: "blur(10px)", borderRight: "1px solid rgba(255,255,255,0.1)", display: "flex", flexDirection: "column" }}>
           <div style={{ flex: 1, padding: "10px", borderBottom: "1px solid rgba(255,255,255,0.1)", overflowY: "auto" }}>
             <h3 style={{ fontSize: "12px", color: "#94a3b8", textTransform: "uppercase", marginBottom: "10px", fontWeight: "bold" }}>Live Feed</h3>
-            {logs.map((log, i) => (
-               <div key={i} style={{ padding: "10px", background: "rgba(255,255,255,0.03)", borderRadius: "6px", fontSize: "11px", borderLeft: log.type==='SOLD' ? "3px solid #4ade80" : "3px solid #60a5fa", marginBottom: "5px" }}>
-                 <strong style={{ color: log.type==='SOLD'?'#4ade80':'#60a5fa', display: "block" }}>{log.type}</strong> {log.msg}
-               </div>
-            ))}
+            {logs.map((log, i) => {
+               // STEP 1 FIX: Safety check for log messages (Prevent Object Crash)
+               const safeMsg = typeof log.msg === 'object' ? (log.msg.name || "System Update") : log.msg;
+               return (
+                 <div key={i} style={{ padding: "10px", background: "rgba(255,255,255,0.03)", borderRadius: "6px", fontSize: "11px", borderLeft: log.type==='SOLD' ? "3px solid #4ade80" : "3px solid #60a5fa", marginBottom: "5px" }}>
+                   <strong style={{ color: log.type==='SOLD'?'#4ade80':'#60a5fa', display: "block" }}>{log.type}</strong> {safeMsg}
+                 </div>
+               );
+            })}
           </div>
           <div style={{ height: "40%", padding: "10px", overflowY: "auto", background: "rgba(0,0,0,0.2)" }}>
             <h3 style={{ fontSize: "12px", color: "#fbbf24", textTransform: "uppercase", marginBottom: "10px", fontWeight: "bold" }}>Up Next</h3>
@@ -237,7 +233,6 @@ export default function AuctionRoom({ socket, userTeam, onLogout }) {
                   <div style={{ margin: "30px 0", padding: "20px", background: "rgba(255,255,255,0.05)", borderRadius: "10px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <div style={{textAlign:"left"}}>
                          <div style={{fontSize: "12px", color: "#94a3b8"}}>SOLD TO</div>
-                         {/* Safe Access using helper */}
                          <div style={{fontSize: "24px", fontWeight: "bold", color: "#fbbf24"}}>{TEAMS[safeTeamId(lastSoldPlayer.soldTo)]?.name || safeTeamId(lastSoldPlayer.soldTo)}</div>
                       </div>
                       {TEAMS[safeTeamId(lastSoldPlayer.soldTo)]?.logo && <img src={TEAMS[safeTeamId(lastSoldPlayer.soldTo)].logo} style={{ height: "60px" }} alt="Winner" />}
@@ -286,17 +281,16 @@ export default function AuctionRoom({ socket, userTeam, onLogout }) {
                   <div style={{ textAlign: "right" }}>
                     <div style={{ fontSize: "12px", color: "#64748b", fontWeight: "bold", letterSpacing: "1px" }}>HIGHEST BIDDER</div>
                     <div style={{ height: "50px", display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "10px" }}>
-                      {/* CRITICAL FIX: Safe access for bidder display */}
                       {bidderId ? (
-                         <>
-                            <span style={{ color: "#facc15", fontWeight: "bold", fontSize: "24px" }}>
-                                {bidderId === myTeam ? "YOU" : bidderId}
-                            </span>
-                            {TEAMS[bidderId]?.logo && <img src={TEAMS[bidderId].logo} style={{height: "40px", filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.5))"}} alt="Bidder"/>}
-                         </>
-                      ) : (
-                         <span style={{color: "#475569", fontSize: "18px", fontStyle: "italic"}}>Waiting...</span>
-                      )}
+                          <>
+                             <span style={{ color: "#facc15", fontWeight: "bold", fontSize: "24px" }}>
+                                 {bidderId === myTeam ? "YOU" : bidderId}
+                             </span>
+                             {TEAMS[bidderId]?.logo && <img src={TEAMS[bidderId].logo} style={{height: "40px", filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.5))"}} alt="Bidder"/>}
+                          </>
+                       ) : (
+                          <span style={{color: "#475569", fontSize: "18px", fontStyle: "italic"}}>Waiting...</span>
+                       )}
                     </div>
                   </div>
                 </div>
