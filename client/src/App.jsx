@@ -8,9 +8,8 @@ import AuctionRoom from "./components/AuctionRoom";
 import AdminPanel from "./components/AdminPanel";
 
 // Connect to Backend
-const socket = io("https://ipl-auction-server-7vga.onrender.com", {
-    transports: ["websocket", "polling"]
-});
+// REVERT TO THIS:
+const socket = io("http://localhost:5000");
 
 function App() {
   // Initialize state from LocalStorage to prevent data loss on refresh

@@ -15,14 +15,12 @@ const AUCTION_FACTS = [
   "Did you know? Chris Morris was once the most expensive player at ₹16.25 Cr!",
   "Mitchell Starc broke all records in 2024 with a ₹24.75 Cr bid.",
   "Teams must spend at least 75% of their total purse.",
-  "Unsold players may return in the accelerated auction phase.",
-  "Right To Match (RTM) cards are not available in this mock auction.",
-  "Mumbai Indians and CSK share 10 titles combined."
+  "Unsold players may return in the accelerated auction phase."
 ];
 
 const HAMMER_SOUND = "https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3";
 
-// HELPER: Ensures we always get a String ID even if an Object is passed
+// --- CRITICAL FIX: PREVENTS WHITE SCREEN CRASH ---
 const safeTeamId = (input) => {
   if (!input) return null;
   if (typeof input === 'object') return input.teamId || input.name || "Unknown";
@@ -44,10 +42,8 @@ export default function AuctionRoom({ socket, userTeam, onLogout }) {
   const [lastSoldPlayer, setLastSoldPlayer] = useState(null);
   const [isPaused, setIsPaused] = useState(false);
   const [timerValue, setTimerValue] = useState(null);
-  
   const [isAutoPilot, setIsAutoPilot] = useState(false);
   const [autoPilotTimer, setAutoPilotTimer] = useState(null);
-  
   const [selectedSquadId, setSelectedSquadId] = useState(null);
   const audioRef = useRef(new Audio(HAMMER_SOUND));
 
@@ -80,7 +76,6 @@ export default function AuctionRoom({ socket, userTeam, onLogout }) {
       if (data.currentSet) setUpcomingPlayers(data.currentSet);
       if (data.isPaused !== undefined) setIsPaused(data.isPaused);
       if (data.timerValue !== undefined) setTimerValue(data.timerValue);
-      
       if (data.isAutoPilot !== undefined) setIsAutoPilot(data.isAutoPilot);
       if (data.autoPilotTimer !== undefined) setAutoPilotTimer(data.autoPilotTimer);
     };
@@ -109,7 +104,6 @@ export default function AuctionRoom({ socket, userTeam, onLogout }) {
 
     const date = new Date().toLocaleString();
     let content = `IPL 2026 MOCK AUCTION - SQUAD REPORT\nGenerated on: ${date}\n\nTEAM: ${teamName} (${myTeam})\nCOACH: ${coachName}\nREMAINING PURSE: ₹${stats.purse} Cr\nTOTAL PLAYERS: ${stats.count}\n\nPLAYERS PURCHASED:\n------------------------------------------------\n`;
-
     ["Batter", "Bowler", "All-Rounder", "Wicket Keeper"].forEach(role => {
         const players = stats.list.filter(p => p.role === role);
         if (players.length > 0) {
@@ -117,7 +111,6 @@ export default function AuctionRoom({ socket, userTeam, onLogout }) {
             players.forEach(p => content += `- ${p.name.padEnd(25)} | ₹${p.soldPrice} Cr | ${p.country}\n`);
         }
     });
-
     const blob = new Blob([content], { type: "text/plain" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
@@ -141,7 +134,6 @@ export default function AuctionRoom({ socket, userTeam, onLogout }) {
   const myPurse = parseFloat(myStats.purse);
   const currentVal = parseFloat(currentBid);
   const basePrice = currentPlayer ? parseFloat(currentPlayer.basePrice) : 0;
-  
   const nextBidAmount = currentVal === 0 ? basePrice : currentVal + 0.20;
   const isLeader = bidderId === myTeam;
   const isOpening = currentVal === 0 || currentVal < basePrice;
@@ -160,14 +152,13 @@ export default function AuctionRoom({ socket, userTeam, onLogout }) {
          <h1 style={{ fontSize: "3rem", fontWeight: "bold" }}>Waiting for Auctioneer...</h1>
          <p style={{ fontSize: "1.2rem", color: "#94a3b8" }}>The auction has not started yet.</p>
          {isAutoPilot && <p style={{color: "#a78bfa", marginTop: "10px", animation: "pulse 1s infinite"}}>🤖 Auto-Pilot is Selecting Player...</p>}
-         <p style={{marginTop: "20px", fontSize: "0.8rem", color: "#64748b"}}>Status: Connected to Server</p>
+         <p style={{marginTop: "20px", fontSize: "0.8rem", color: "#64748b"}}>Status: Localhost Connected</p>
       </div>
     );
   }
 
   return (
     <div style={{ height: "100vh", background: "radial-gradient(circle at center, #1e293b 0%, #0f172a 100%)", color: "white", fontFamily: "'Segoe UI', sans-serif", display: "flex", flexDirection: "column", overflow: "hidden" }}>
-      
       {/* HEADER */}
       <div style={{ height: "70px", background: `linear-gradient(90deg, ${theme.secondary} 0%, rgba(30, 41, 59, 0.95) 100%)`, borderBottom: `2px solid ${theme.primary}`, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 20px", boxShadow: "0 4px 20px rgba(0,0,0,0.4)", zIndex: 20 }}>
         <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
@@ -177,9 +168,7 @@ export default function AuctionRoom({ socket, userTeam, onLogout }) {
             <div style={{ display: "flex", gap: "15px", alignItems: "center" }}>
               <p style={{ fontSize: "14px", color: "#cbd5e1", margin: 0, fontWeight: "600" }}>Head Coach: <span style={{color: "white"}}>{coachName}</span></p>
               <div style={{height: "15px", width: "1px", background: "#64748b"}}></div>
-              <span style={{ fontSize: "14px", color: canAffordStandard ? "#4ade80" : "#ef4444", fontWeight: "bold", textShadow: "0 0 10px rgba(74, 222, 128, 0.3)" }}>
-                Purse: ₹{myPurse.toFixed(2)} Cr
-              </span>
+              <span style={{ fontSize: "14px", color: canAffordStandard ? "#4ade80" : "#ef4444", fontWeight: "bold", textShadow: "0 0 10px rgba(74, 222, 128, 0.3)" }}>Purse: ₹{myPurse.toFixed(2)} Cr</span>
             </div>
           </div>
         </div>
@@ -194,12 +183,11 @@ export default function AuctionRoom({ socket, userTeam, onLogout }) {
       <div style={{ flex: 1, display: "flex", overflow: "hidden", paddingBottom: "40px", position: "relative" }}> 
         <div style={{ position: "absolute", inset: 0, opacity: 0.05, backgroundImage: "radial-gradient(#ffffff 1px, transparent 1px)", backgroundSize: "30px 30px", pointerEvents: "none" }}></div>
 
-        {/* LEFT SIDEBAR: LOGS (FIXED CRASH HERE) */}
+        {/* LEFT SIDEBAR */}
         <div style={{ width: "260px", background: "rgba(15, 23, 42, 0.6)", backdropFilter: "blur(10px)", borderRight: "1px solid rgba(255,255,255,0.1)", display: "flex", flexDirection: "column" }}>
           <div style={{ flex: 1, padding: "10px", borderBottom: "1px solid rgba(255,255,255,0.1)", overflowY: "auto" }}>
             <h3 style={{ fontSize: "12px", color: "#94a3b8", textTransform: "uppercase", marginBottom: "10px", fontWeight: "bold" }}>Live Feed</h3>
             {logs.map((log, i) => {
-               // STEP 1 FIX: Safety check for log messages (Prevent Object Crash)
                const safeMsg = typeof log.msg === 'object' ? (log.msg.name || "System Update") : log.msg;
                return (
                  <div key={i} style={{ padding: "10px", background: "rgba(255,255,255,0.03)", borderRadius: "6px", fontSize: "11px", borderLeft: log.type==='SOLD' ? "3px solid #4ade80" : "3px solid #60a5fa", marginBottom: "5px" }}>
@@ -221,8 +209,6 @@ export default function AuctionRoom({ socket, userTeam, onLogout }) {
 
         {/* CENTER: AUCTION ARENA */}
         <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px", position: "relative" }}>
-          
-          {/* SOLD POPUP */}
           {lastSoldPlayer && (
             <div style={{ position: "absolute", inset: 0, zIndex: 150, background: "rgba(0,0,0,0.8)", backdropFilter: "blur(5px)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                <div className="sold-overlay-container" style={{ background: "linear-gradient(135deg, #1e293b, #0f172a)", width: "600px", padding: "40px", borderRadius: "20px", border: "2px solid #eab308", textAlign: "center", position: "relative", boxShadow: "0 0 50px rgba(234, 179, 8, 0.3)" }}>
@@ -265,19 +251,15 @@ export default function AuctionRoom({ socket, userTeam, onLogout }) {
           {/* MAIN PLAYER CARD */}
           {currentPlayer ? (
             <div style={{ width: "100%", maxWidth: "750px", textAlign: "center", position: "relative" }}>
-              
               <div style={{ background: "linear-gradient(180deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%)", borderRadius: "24px", border: "1px solid rgba(255,255,255,0.1)", padding: "40px", boxShadow: "0 25px 60px -12px rgba(0, 0, 0, 0.6)" }}>
-                
                 <span style={{ backgroundColor: "#3b82f6", color: "white", padding: "6px 16px", borderRadius: "20px", fontSize: "12px", fontWeight: "bold", textTransform: "uppercase", letterSpacing: "1px", boxShadow: "0 4px 10px rgba(59, 130, 246, 0.4)" }}>{currentPlayer.role}</span>
                 <h1 style={{ fontSize: "64px", fontWeight: "900", margin: "15px 0 5px", background: "linear-gradient(180deg, #ffffff 0%, #94a3b8 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", filter: "drop-shadow(0 2px 2px rgba(0,0,0,0.5))" }}>{currentPlayer.name}</h1>
                 <p style={{ fontSize: "24px", color: "#64748b", margin: "0", fontWeight: "300" }}>{currentPlayer.country} • Base: ₹{currentPlayer.basePrice} Cr</p>
-                
                 <div style={{ background: "rgba(0,0,0,0.3)", padding: "20px 30px", borderRadius: "16px", margin: "30px 0", border: "1px solid rgba(255,255,255,0.05)", display: "flex", justifyContent: "space-between", alignItems: "center", boxShadow: "inset 0 2px 10px rgba(0,0,0,0.2)" }}>
                   <div style={{ textAlign: "left" }}>
                     <div style={{ fontSize: "12px", color: "#64748b", fontWeight: "bold", letterSpacing: "1px" }}>CURRENT PRICE</div>
                     <div style={{ fontSize: "56px", fontWeight: "bold", color: "#4ade80", textShadow: "0 0 20px rgba(74, 222, 128, 0.1)" }}>₹{currentBid}<span style={{fontSize:"24px", opacity: 0.6}}>Cr</span></div>
                   </div>
-                  
                   <div style={{ textAlign: "right" }}>
                     <div style={{ fontSize: "12px", color: "#64748b", fontWeight: "bold", letterSpacing: "1px" }}>HIGHEST BIDDER</div>
                     <div style={{ height: "50px", display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "10px" }}>
@@ -370,7 +352,7 @@ export default function AuctionRoom({ socket, userTeam, onLogout }) {
           )}
         </div>
 
-        {/* RIGHT SIDEBAR: SQUAD */}
+        {/* RIGHT SIDEBAR */}
         <div style={{ width: "300px", background: "rgba(15, 23, 42, 0.6)", backdropFilter: "blur(10px)", borderLeft: "1px solid rgba(255,255,255,0.1)", display: "flex", flexDirection: "column" }}>
             <div style={{ padding: "20px", borderBottom: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.03)" }}>
                 <h3 style={{ fontSize: "14px", color: "#fbbf24", letterSpacing: "1px", textTransform: "uppercase", fontWeight: "bold" }}>My Squad</h3>
