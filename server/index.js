@@ -7,6 +7,11 @@ const INITIAL_SETS = require("./playersData");
 const app = express();
 app.use(cors());
 
+// This tells the robot: "Yes, I am alive!"
+app.get('/', (req, res) => {
+    res.send("Auction Server is Running!");
+});
+
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: { origin: "*", methods: ["GET", "POST"] },

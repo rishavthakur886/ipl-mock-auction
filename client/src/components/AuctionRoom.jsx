@@ -20,7 +20,8 @@ const AUCTION_FACTS = [
   "Mumbai Indians and CSK share 10 titles combined."
 ];
 
-const HAMMER_SOUND = "https://www.soundjay.com/misc/sounds/gavel-1.mp3";
+// NEW SECURE SOUND LINK
+const HAMMER_SOUND = "https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3";
 
 export default function AuctionRoom({ socket, userTeam, onLogout }) {
   const myTeam = userTeam?.teamId; 
@@ -145,6 +146,19 @@ export default function AuctionRoom({ socket, userTeam, onLogout }) {
     { label: "+ 5 Cr", val: 5.00 },
   ];
 
+  // --- THE FIX IS HERE (WAITING SCREEN) ---
+  if (!currentPlayer) {
+    return (
+      <div style={{ height: "100vh", background: "radial-gradient(circle at center, #1e293b 0%, #0f172a 100%)", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", color: "white", fontFamily: "'Segoe UI', sans-serif" }}>
+         <h1 style={{ fontSize: "3rem", fontWeight: "bold" }}>Waiting for Auctioneer...</h1>
+         <p style={{ fontSize: "1.2rem", color: "#94a3b8" }}>The auction has not started yet.</p>
+         {isAutoPilot && <p style={{color: "#a78bfa", marginTop: "10px", animation: "pulse 1s infinite"}}>🤖 Auto-Pilot is Selecting Player...</p>}
+         <p style={{marginTop: "20px", fontSize: "0.8rem", color: "#64748b"}}>Status: Connected to Server</p>
+      </div>
+    );
+  }
+  // ----------------------------------------
+
   return (
     <div style={{ height: "100vh", background: "radial-gradient(circle at center, #1e293b 0%, #0f172a 100%)", color: "white", fontFamily: "'Segoe UI', sans-serif", display: "flex", flexDirection: "column", overflow: "hidden" }}>
       
@@ -207,11 +221,11 @@ export default function AuctionRoom({ socket, userTeam, onLogout }) {
                   <h1 style={{ fontSize: "48px", margin: "10px 0", color: "white" }}>{lastSoldPlayer.name}</h1>
                   <p style={{ color: "#94a3b8", fontSize: "20px" }}>{lastSoldPlayer.role} • {lastSoldPlayer.country}</p>
                   <div style={{ margin: "30px 0", padding: "20px", background: "rgba(255,255,255,0.05)", borderRadius: "10px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                     <div style={{textAlign:"left"}}>
-                        <div style={{fontSize: "12px", color: "#94a3b8"}}>SOLD TO</div>
-                        <div style={{fontSize: "24px", fontWeight: "bold", color: "#fbbf24"}}>{TEAMS[lastSoldPlayer.soldTo]?.name}</div>
-                     </div>
-                     <img src={TEAMS[lastSoldPlayer.soldTo]?.logo} style={{ height: "60px" }} alt="Winner" />
+                      <div style={{textAlign:"left"}}>
+                         <div style={{fontSize: "12px", color: "#94a3b8"}}>SOLD TO</div>
+                         <div style={{fontSize: "24px", fontWeight: "bold", color: "#fbbf24"}}>{TEAMS[lastSoldPlayer.soldTo]?.name}</div>
+                      </div>
+                      <img src={TEAMS[lastSoldPlayer.soldTo]?.logo} style={{ height: "60px" }} alt="Winner" />
                   </div>
                   <div style={{ fontSize: "50px", fontWeight: "900", color: "#4ade80" }}>₹{lastSoldPlayer.soldPrice} Cr</div>
                </div>
@@ -330,11 +344,10 @@ export default function AuctionRoom({ socket, userTeam, onLogout }) {
               {isAutoPilot && <div style={{ marginTop: "20px", color: "#a78bfa", fontSize: "14px", opacity: 0.8 }}>🤖 Auto-Pilot System Active ({autoPilotTimer}s)</div>}
             </div>
           ) : (
+            // FALLBACK (Just in case, though the top check handles this now)
             <div style={{ textAlign: "center", color: "#64748b" }}>
               <div style={{ fontSize: "60px", marginBottom: "20px", opacity: 0.5 }}>⌛</div>
               <h2 style={{ fontSize: "30px", marginBottom: "10px", color: "white" }}>Waiting for Auctioneer...</h2>
-              <p>The next player will appear shortly.</p>
-              {isAutoPilot && <p style={{color: "#a78bfa", marginTop: "15px", animation: "pulse 1.5s infinite"}}>System is selecting player...</p>}
             </div>
           )}
         </div>

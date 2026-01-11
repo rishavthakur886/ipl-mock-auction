@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import io from "socket.io-client";
+import  io  from "socket.io-client";
 
 // Import Components
 import LandingPage from "./components/LandingPage";
@@ -8,7 +8,9 @@ import AuctionRoom from "./components/AuctionRoom";
 import AdminPanel from "./components/AdminPanel";
 
 // Connect to Backend
-const socket = io("http://localhost:5000");
+const socket = io("https://ipl-auction-server-7vga.onrender.com", {
+    transports: ["websocket", "polling"]
+});
 
 function App() {
   // Initialize state from LocalStorage to prevent data loss on refresh
@@ -61,10 +63,16 @@ function App() {
             // Logic: If already logged in, go to respective page. Else show Landing.
             userTeam ? <Navigate to="/auction" /> : 
             isAdmin ? <Navigate to="/admin" /> :
+            // NEW / FIXED CODE
             <LandingPage 
-              onTeamSelect={handleTeamSelect} 
-              onAdminLogin={handleAdminLogin} // Pass the function here!
-            />
+                onJoin={(data) => {
+                if (data.role === "admin") {
+                handleAdminLogin();
+            } else {
+            handleTeamSelect(data);
+           }
+          }} 
+        />
           } 
         />
 
