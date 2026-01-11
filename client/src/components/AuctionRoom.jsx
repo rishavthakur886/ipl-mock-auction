@@ -26,6 +26,7 @@ const HAMMER_SOUND = "https://assets.mixkit.co/active_storage/sfx/2869/2869-prev
 export default function AuctionRoom({ socket, userTeam, onLogout }) {
   const myTeam = userTeam?.teamId; 
   const coachName = userTeam?.coachName || "Coach"; 
+  // FIX 1: Safely access theme, fallback if team not found
   const theme = TEAMS[myTeam] || { primary: "#3b82f6", secondary: "#1e293b" };
 
   const [currentPlayer, setCurrentPlayer] = useState(null);
@@ -96,11 +97,13 @@ export default function AuctionRoom({ socket, userTeam, onLogout }) {
   };
 
   const handleDownloadSquad = () => {
+    // FIX 2: Check if team exists before accessing name
+    const teamName = TEAMS[myTeam]?.name || myTeam || "Unknown Team";
     const stats = getTeamStats(myTeam);
     if (stats.list.length === 0) { alert("Your squad is empty!"); return; }
 
     const date = new Date().toLocaleString();
-    let content = `IPL 2026 MOCK AUCTION - SQUAD REPORT\nGenerated on: ${date}\n\nTEAM: ${TEAMS[myTeam].name} (${myTeam})\nCOACH: ${coachName}\nREMAINING PURSE: ₹${stats.purse} Cr\nTOTAL PLAYERS: ${stats.count}\n\nPLAYERS PURCHASED:\n------------------------------------------------\n`;
+    let content = `IPL 2026 MOCK AUCTION - SQUAD REPORT\nGenerated on: ${date}\n\nTEAM: ${teamName} (${myTeam})\nCOACH: ${coachName}\nREMAINING PURSE: ₹${stats.purse} Cr\nTOTAL PLAYERS: ${stats.count}\n\nPLAYERS PURCHASED:\n------------------------------------------------\n`;
 
     ["Batter", "Bowler", "All-Rounder", "Wicket Keeper"].forEach(role => {
         const players = stats.list.filter(p => p.role === role);
@@ -146,7 +149,6 @@ export default function AuctionRoom({ socket, userTeam, onLogout }) {
     { label: "+ 5 Cr", val: 5.00 },
   ];
 
-  // --- THE FIX IS HERE (WAITING SCREEN) ---
   if (!currentPlayer) {
     return (
       <div style={{ height: "100vh", background: "radial-gradient(circle at center, #1e293b 0%, #0f172a 100%)", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", color: "white", fontFamily: "'Segoe UI', sans-serif" }}>
@@ -157,7 +159,6 @@ export default function AuctionRoom({ socket, userTeam, onLogout }) {
       </div>
     );
   }
-  // ----------------------------------------
 
   return (
     <div style={{ height: "100vh", background: "radial-gradient(circle at center, #1e293b 0%, #0f172a 100%)", color: "white", fontFamily: "'Segoe UI', sans-serif", display: "flex", flexDirection: "column", overflow: "hidden" }}>
@@ -165,9 +166,11 @@ export default function AuctionRoom({ socket, userTeam, onLogout }) {
       {/* HEADER - PREMIUM STYLE */}
       <div style={{ height: "70px", background: `linear-gradient(90deg, ${theme.secondary} 0%, rgba(30, 41, 59, 0.95) 100%)`, borderBottom: `2px solid ${theme.primary}`, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 20px", boxShadow: "0 4px 20px rgba(0,0,0,0.4)", zIndex: 20 }}>
         <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
+          {/* FIX 3: Optional chain on TEAMS[myTeam] */}
           {TEAMS[myTeam] && <div style={{background: "white", padding: "4px", borderRadius: "50%"}}><img src={TEAMS[myTeam].logo} alt={myTeam} style={{ height: "45px", display: "block" }} /></div>}
           <div>
-            <h1 style={{ fontSize: "18px", fontWeight: "900", textTransform: "uppercase", margin: 0, letterSpacing: "1px" }}>{myTeam ? TEAMS[myTeam].name : "Spectator Mode"}</h1>
+            {/* FIX 4: Handle case where myTeam exists but isn't in TEAMS list */}
+            <h1 style={{ fontSize: "18px", fontWeight: "900", textTransform: "uppercase", margin: 0, letterSpacing: "1px" }}>{TEAMS[myTeam]?.name || myTeam || "Spectator Mode"}</h1>
             <div style={{ display: "flex", gap: "15px", alignItems: "center" }}>
               <p style={{ fontSize: "14px", color: "#cbd5e1", margin: 0, fontWeight: "600" }}>Head Coach: <span style={{color: "white"}}>{coachName}</span></p>
               <div style={{height: "15px", width: "1px", background: "#64748b"}}></div>
@@ -202,8 +205,9 @@ export default function AuctionRoom({ socket, userTeam, onLogout }) {
             <h3 style={{ fontSize: "12px", color: "#fbbf24", textTransform: "uppercase", marginBottom: "10px", fontWeight: "bold" }}>Up Next</h3>
             {upcomingPlayers.slice(0, 5).map((p, i) => (
               <div key={i} style={{ padding: "10px", borderBottom: "1px solid rgba(255,255,255,0.05)", opacity: 0.8 }}>
-                <div style={{ fontWeight: "bold", fontSize: "13px", color: "white" }}>{p.name}</div>
-                <div style={{ fontSize: "11px", color: "#94a3b8" }}>{p.role} • {p.country}</div>
+                {/* FIX 5: Optional chaining for player name */}
+                <div style={{ fontWeight: "bold", fontSize: "13px", color: "white" }}>{p?.name || "Unknown"}</div>
+                <div style={{ fontSize: "11px", color: "#94a3b8" }}>{p?.role} • {p?.country}</div>
               </div>
             ))}
           </div>
@@ -223,9 +227,10 @@ export default function AuctionRoom({ socket, userTeam, onLogout }) {
                   <div style={{ margin: "30px 0", padding: "20px", background: "rgba(255,255,255,0.05)", borderRadius: "10px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <div style={{textAlign:"left"}}>
                          <div style={{fontSize: "12px", color: "#94a3b8"}}>SOLD TO</div>
-                         <div style={{fontSize: "24px", fontWeight: "bold", color: "#fbbf24"}}>{TEAMS[lastSoldPlayer.soldTo]?.name}</div>
+                         {/* FIX 6: Safety check for TEAMS access */}
+                         <div style={{fontSize: "24px", fontWeight: "bold", color: "#fbbf24"}}>{TEAMS[lastSoldPlayer.soldTo]?.name || lastSoldPlayer.soldTo}</div>
                       </div>
-                      <img src={TEAMS[lastSoldPlayer.soldTo]?.logo} style={{ height: "60px" }} alt="Winner" />
+                      {TEAMS[lastSoldPlayer.soldTo]?.logo && <img src={TEAMS[lastSoldPlayer.soldTo].logo} style={{ height: "60px" }} alt="Winner" />}
                   </div>
                   <div style={{ fontSize: "50px", fontWeight: "900", color: "#4ade80" }}>₹{lastSoldPlayer.soldPrice} Cr</div>
                </div>
@@ -271,7 +276,8 @@ export default function AuctionRoom({ socket, userTeam, onLogout }) {
                   <div style={{ textAlign: "right" }}>
                     <div style={{ fontSize: "12px", color: "#64748b", fontWeight: "bold", letterSpacing: "1px" }}>HIGHEST BIDDER</div>
                     <div style={{ height: "50px", display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "10px" }}>
-                      {currentBidder ? <><span style={{ color: "#facc15", fontWeight: "bold", fontSize: "24px" }}>{currentBidder === myTeam ? "YOU" : currentBidder}</span><img src={TEAMS[currentBidder].logo} style={{height: "40px", filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.5))"}} /></> : <span style={{color: "#475569", fontSize: "18px", fontStyle: "italic"}}>Waiting...</span>}
+                      {/* FIX 7: Safe access for bidder logo */}
+                      {currentBidder ? <><span style={{ color: "#facc15", fontWeight: "bold", fontSize: "24px" }}>{currentBidder === myTeam ? "YOU" : currentBidder}</span>{TEAMS[currentBidder]?.logo && <img src={TEAMS[currentBidder].logo} style={{height: "40px", filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.5))"}} />}</> : <span style={{color: "#475569", fontSize: "18px", fontStyle: "italic"}}>Waiting...</span>}
                     </div>
                   </div>
                 </div>
@@ -424,7 +430,7 @@ export default function AuctionRoom({ socket, userTeam, onLogout }) {
                       </div>
                     </div>
                     <div style={{ padding: "20px" }}>
-                       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "15px" }}>
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "15px" }}>
                           {["Batter", "Bowler", "All-Rounder", "Wicket Keeper"].map(role => {
                             const rolePlayers = stats.list.filter(p => p.role === role);
                             return (
@@ -440,7 +446,7 @@ export default function AuctionRoom({ socket, userTeam, onLogout }) {
                               </div>
                             )
                           })}
-                       </div>
+                        </div>
                     </div>
                   </div>
                 );
