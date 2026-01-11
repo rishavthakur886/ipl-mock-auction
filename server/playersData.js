@@ -1,0 +1,155 @@
+module.exports = [
+  {
+    id: "SET1",
+    name: "Marquee Set 1",
+    players: [
+      { id: 101, name: "Virat Kohli", role: "Batter", country: "India", basePrice: 2.0, isCapped: true },
+      { id: 102, name: "Rohit Sharma", role: "Batter", country: "India", basePrice: 2.0, isCapped: true },
+      { id: 103, name: "Jasprit Bumrah", role: "Bowler", country: "India", basePrice: 2.0, isCapped: true },
+      { id: 104, name: "Travis Head", role: "Batter", country: "Australia", basePrice: 2.0, isCapped: true },
+      { id: 105, name: "Heinrich Klaasen", role: "Wicket Keeper", country: "South Africa", basePrice: 2.0, isCapped: true },
+      { id: 106, name: "Rashid Khan", role: "Bowler", country: "Afghanistan", basePrice: 2.0, isCapped: true },
+      { id: 107, name: "Pat Cummins", role: "All-Rounder", country: "Australia", basePrice: 2.0, isCapped: true }
+    ]
+  },
+  {
+    id: "SET2",
+    name: "Marquee Set 2",
+    players: [
+      { id: 201, name: "Hardik Pandya", role: "All-Rounder", country: "India", basePrice: 2.0, isCapped: true },
+      { id: 202, name: "Suryakumar Yadav", role: "Batter", country: "India", basePrice: 2.0, isCapped: true },
+      { id: 203, name: "Glenn Maxwell", role: "All-Rounder", country: "Australia", basePrice: 2.0, isCapped: true },
+      { id: 204, name: "Jos Buttler", role: "Wicket Keeper", country: "England", basePrice: 2.0, isCapped: true },
+      { id: 205, name: "Mitchell Starc", role: "Bowler", country: "Australia", basePrice: 2.0, isCapped: true },
+      { id: 206, name: "Andre Russell", role: "All-Rounder", country: "West Indies", basePrice: 2.0, isCapped: true }
+    ]
+  },
+  {
+    id: "SET3",
+    name: "Batters - Set 1",
+    players: [
+      { id: 301, name: "Shubman Gill", role: "Batter", country: "India", basePrice: 2.0, isCapped: true },
+      { id: 302, name: "Yashasvi Jaiswal", role: "Batter", country: "India", basePrice: 2.0, isCapped: true },
+      { id: 303, name: "Faf du Plessis", role: "Batter", country: "South Africa", basePrice: 2.0, isCapped: true },
+      { id: 304, name: "David Warner", role: "Batter", country: "Australia", basePrice: 2.0, isCapped: true },
+      { id: 305, name: "Steve Smith", role: "Batter", country: "Australia", basePrice: 2.0, isCapped: true },
+      { id: 306, name: "Kane Williamson", role: "Batter", country: "New Zealand", basePrice: 2.0, isCapped: true },
+      { id: 307, name: "Rinku Singh", role: "Batter", country: "India", basePrice: 1.5, isCapped: true },
+      { id: 308, name: "Shreyas Iyer", role: "Batter", country: "India", basePrice: 2.0, isCapped: true },
+      { id: 309, name: "Ruturaj Gaikwad", role: "Batter", country: "India", basePrice: 2.0, isCapped: true },
+      { id: 310, name: "Shivam Dube", role: "Batter", country: "India", basePrice: 1.5, isCapped: true }
+    ]
+  },
+  {
+    id: "SET4",
+    name: "All-Rounders - Set 1",
+    players: [
+      { id: 401, name: "Ravindra Jadeja", role: "All-Rounder", country: "India", basePrice: 2.0, isCapped: true },
+      { id: 402, name: "Axar Patel", role: "All-Rounder", country: "India", basePrice: 2.0, isCapped: true },
+      { id: 403, name: "Marcus Stoinis", role: "All-Rounder", country: "Australia", basePrice: 2.0, isCapped: true },
+      { id: 404, name: "Liam Livingstone", role: "All-Rounder", country: "England", basePrice: 2.0, isCapped: true },
+      { id: 405, name: "Sam Curran", role: "All-Rounder", country: "England", basePrice: 2.0, isCapped: true },
+      { id: 406, name: "Cameron Green", role: "All-Rounder", country: "Australia", basePrice: 2.0, isCapped: true },
+      { id: 407, name: "Moeen Ali", role: "All-Rounder", country: "England", basePrice: 2.0, isCapped: true },
+      { id: 408, name: "Daryl Mitchell", role: "All-Rounder", country: "New Zealand", basePrice: 1.5, isCapped: true },
+      { id: 409, name: "Rachin Ravindra", role: "All-Rounder", country: "New Zealand", basePrice: 1.5, isCapped: true },
+      { id: 410, name: "Azmatullah Omarzai", role: "All-Rounder", country: "Afghanistan", basePrice: 1.0, isCapped: true }
+    ]
+  },
+  {
+    id: "SET5",
+    name: "Wicket Keepers - Set 1",
+    players: [
+      { id: 501, name: "KL Rahul", role: "Wicket Keeper", country: "India", basePrice: 2.0, isCapped: true },
+      { id: 502, name: "Sanju Samson", role: "Wicket Keeper", country: "India", basePrice: 2.0, isCapped: true },
+      { id: 503, name: "Rishabh Pant", role: "Wicket Keeper", country: "India", basePrice: 2.0, isCapped: true },
+      { id: 504, name: "Ishan Kishan", role: "Wicket Keeper", country: "India", basePrice: 2.0, isCapped: true },
+      { id: 505, name: "Quinton de Kock", role: "Wicket Keeper", country: "South Africa", basePrice: 2.0, isCapped: true },
+      { id: 506, name: "Nicholas Pooran", role: "Wicket Keeper", country: "West Indies", basePrice: 2.0, isCapped: true },
+      { id: 507, name: "Phil Salt", role: "Wicket Keeper", country: "England", basePrice: 1.5, isCapped: true },
+      { id: 508, name: "Rahmanullah Gurbaz", role: "Wicket Keeper", country: "Afghanistan", basePrice: 1.0, isCapped: true },
+      { id: 509, name: "Jonny Bairstow", role: "Wicket Keeper", country: "England", basePrice: 2.0, isCapped: true },
+      { id: 510, name: "Devon Conway", role: "Wicket Keeper", country: "New Zealand", basePrice: 2.0, isCapped: true }
+    ]
+  },
+  {
+    id: "SET6",
+    name: "Fast Bowlers - Set 1",
+    players: [
+      { id: 601, name: "Mohammed Shami", role: "Bowler", country: "India", basePrice: 2.0, isCapped: true },
+      { id: 602, name: "Mohammed Siraj", role: "Bowler", country: "India", basePrice: 2.0, isCapped: true },
+      { id: 603, name: "Trent Boult", role: "Bowler", country: "New Zealand", basePrice: 2.0, isCapped: true },
+      { id: 604, name: "Kagiso Rabada", role: "Bowler", country: "South Africa", basePrice: 2.0, isCapped: true },
+      { id: 605, name: "Anrich Nortje", role: "Bowler", country: "South Africa", basePrice: 2.0, isCapped: true },
+      { id: 606, name: "Arshdeep Singh", role: "Bowler", country: "India", basePrice: 2.0, isCapped: true },
+      { id: 607, name: "Bhuvneshwar Kumar", role: "Bowler", country: "India", basePrice: 2.0, isCapped: true },
+      { id: 608, name: "Deepak Chahar", role: "Bowler", country: "India", basePrice: 2.0, isCapped: true },
+      { id: 609, name: "Jofra Archer", role: "Bowler", country: "England", basePrice: 2.0, isCapped: true },
+      { id: 610, name: "Lockie Ferguson", role: "Bowler", country: "New Zealand", basePrice: 2.0, isCapped: true }
+    ]
+  },
+  {
+    id: "SET7",
+    name: "Spinners - Set 1",
+    players: [
+      { id: 701, name: "Yuzvendra Chahal", role: "Bowler", country: "India", basePrice: 2.0, isCapped: true },
+      { id: 702, name: "Kuldeep Yadav", role: "Bowler", country: "India", basePrice: 2.0, isCapped: true },
+      { id: 703, name: "Ravichandran Ashwin", role: "Bowler", country: "India", basePrice: 2.0, isCapped: true },
+      { id: 704, name: "Sunil Narine", role: "Bowler", country: "West Indies", basePrice: 2.0, isCapped: true },
+      { id: 705, name: "Varun Chakravarthy", role: "Bowler", country: "India", basePrice: 2.0, isCapped: true },
+      { id: 706, name: "Wanindu Hasaranga", role: "Bowler", country: "Sri Lanka", basePrice: 2.0, isCapped: true },
+      { id: 707, name: "Adam Zampa", role: "Bowler", country: "Australia", basePrice: 2.0, isCapped: true },
+      { id: 708, name: "Maheesh Theekshana", role: "Bowler", country: "Sri Lanka", basePrice: 1.5, isCapped: true },
+      { id: 709, name: "Noor Ahmad", role: "Bowler", country: "Afghanistan", basePrice: 1.5, isCapped: true },
+      { id: 710, name: "Ravi Bishnoi", role: "Bowler", country: "India", basePrice: 2.0, isCapped: true }
+    ]
+  },
+  {
+    id: "SET8",
+    name: "Uncapped Batters",
+    players: [
+      { id: 801, name: "Nehal Wadhera", role: "Batter", country: "India", basePrice: 0.2, isCapped: false },
+      { id: 802, name: "Sameer Rizvi", role: "Batter", country: "India", basePrice: 0.2, isCapped: false },
+      { id: 803, name: "Abhishek Sharma", role: "Batter", country: "India", basePrice: 0.2, isCapped: false },
+      { id: 804, name: "Rahul Tripathi", role: "Batter", country: "India", basePrice: 0.5, isCapped: false },
+      { id: 805, name: "Shahrukh Khan", role: "Batter", country: "India", basePrice: 0.4, isCapped: false },
+      { id: 806, name: "Abdul Samad", role: "Batter", country: "India", basePrice: 0.2, isCapped: false },
+      { id: 807, name: "Vishnu Vinod", role: "Batter", country: "India", basePrice: 0.2, isCapped: false },
+      { id: 808, name: "Angkrish Raghuvanshi", role: "Batter", country: "India", basePrice: 0.2, isCapped: false },
+      { id: 809, name: "Ashutosh Sharma", role: "Batter", country: "India", basePrice: 0.2, isCapped: false },
+      { id: 810, name: "Shashank Singh", role: "Batter", country: "India", basePrice: 0.2, isCapped: false }
+    ]
+  },
+  {
+    id: "SET9",
+    name: "Uncapped Bowlers",
+    players: [
+      { id: 901, name: "Mohsin Khan", role: "Bowler", country: "India", basePrice: 0.2, isCapped: false },
+      { id: 902, name: "Yash Dayal", role: "Bowler", country: "India", basePrice: 0.2, isCapped: false },
+      { id: 903, name: "Akash Madhwal", role: "Bowler", country: "India", basePrice: 0.2, isCapped: false },
+      { id: 904, name: "Harshit Rana", role: "Bowler", country: "India", basePrice: 0.2, isCapped: false },
+      { id: 905, name: "Vaibhav Arora", role: "Bowler", country: "India", basePrice: 0.2, isCapped: false },
+      { id: 906, name: "Mayank Yadav", role: "Bowler", country: "India", basePrice: 0.2, isCapped: false },
+      { id: 907, name: "Vidwath Kaverappa", role: "Bowler", country: "India", basePrice: 0.2, isCapped: false },
+      { id: 908, name: "Kartik Tyagi", role: "Bowler", country: "India", basePrice: 0.2, isCapped: false },
+      { id: 909, name: "Suyash Sharma", role: "Bowler", country: "India", basePrice: 0.2, isCapped: false },
+      { id: 910, name: "Manav Suthar", role: "Bowler", country: "India", basePrice: 0.2, isCapped: false }
+    ]
+  },
+  {
+    id: "SET10",
+    name: "Overseas T20 Specialists",
+    players: [
+      { id: 1001, name: "Tim David", role: "Batter", country: "Australia", basePrice: 2.0, isCapped: true },
+      { id: 1002, name: "Shimron Hetmyer", role: "Batter", country: "West Indies", basePrice: 2.0, isCapped: true },
+      { id: 1003, name: "Rovman Powell", role: "Batter", country: "West Indies", basePrice: 1.5, isCapped: true },
+      { id: 1004, name: "David Miller", role: "Batter", country: "South Africa", basePrice: 2.0, isCapped: true },
+      { id: 1005, name: "Aiden Markram", role: "Batter", country: "South Africa", basePrice: 2.0, isCapped: true },
+      { id: 1006, name: "Tristan Stubbs", role: "Wicket Keeper", country: "South Africa", basePrice: 1.5, isCapped: true },
+      { id: 1007, name: "Romario Shepherd", role: "All-Rounder", country: "West Indies", basePrice: 1.0, isCapped: true },
+      { id: 1008, name: "Gerald Coetzee", role: "Bowler", country: "South Africa", basePrice: 1.5, isCapped: true },
+      { id: 1009, name: "Marco Jansen", role: "All-Rounder", country: "South Africa", basePrice: 1.5, isCapped: true },
+      { id: 1010, name: "Matheesha Pathirana", role: "Bowler", country: "Sri Lanka", basePrice: 1.5, isCapped: true }
+    ]
+  }
+];

@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Reset body to avoid white borders */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #0b0e14; /* Your dark theme bg */
+  color: white;
+}
